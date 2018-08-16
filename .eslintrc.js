@@ -10,4 +10,5 @@ module.exports = {
     window: true,
     web3: true,
   },
+  "parser": "babel-eslint"
 };
