@@ -32,7 +32,8 @@ const TagLine = styled.h2`
 `;
 
 const CTA = styled.p`
-  font-size: 20px;
+  font-size: ${({ primary }) => (primary ? "20px" : "16px")};
+  margin: 10px 0;
 
   & > a {
     color: ${({ theme }) => theme.colors.fg.accent};
@@ -50,6 +51,12 @@ const CTA = styled.p`
   }
 `;
 
+const Or = styled.p`
+  margin: 0;
+  font-size: 20px;
+  font-style: italic;
+`;
+
 const Em = styled.span`
   color: ${({ theme }) => theme.colors.fg.accent};
 `;
@@ -62,9 +69,14 @@ const Landing = () => (
     <TagLine>
       Check of ownership and existence of files using <Ethereum />
     </TagLine>
-    <CTA>
+    <CTA primary>
       <Link to="/upload">Upload a file</Link>
       &nbsp;to get started!
+    </CTA>
+    <Or>or</Or>
+    <CTA>
+      <Link to="/upload">Sign in</Link>
+      &nbsp;to view your files
     </CTA>
   </Container>
 );
