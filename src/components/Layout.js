@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import Header from "./Header";
 
-const Container = styled.div`
+export const Container = styled.div`
   -webkit-font-smoothing: antialiased;
   box-sizing: border-box;
   color: ${({ theme }) => theme.colors.fg.default};
@@ -25,15 +25,14 @@ const Content = styled.div`
   padding: 40px;
 `;
 
-const Layout = ({ loggedIn, children }) => (
+const Layout = ({ children }) => (
   <Container>
-    <Header loggedIn={loggedIn} />
+    <Header />
     <Content>{children}</Content>
   </Container>
 );
 
 Layout.propTypes = {
-  loggedIn: PropTypes.bool.isRequired,
   children: PropTypes.node.isRequired
 };
 

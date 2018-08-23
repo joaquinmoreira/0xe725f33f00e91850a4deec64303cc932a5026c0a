@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { Ethereum } from "styled-icons/fa-brands";
+import Layout from "../Layout";
 
 const Container = styled.div`
   display: flex;
@@ -62,23 +63,25 @@ const Em = styled.span`
 `;
 
 const Landing = () => (
-  <Container>
-    <Title>
-      Proof of <Em>Existence</Em>
-    </Title>
-    <TagLine>
-      Check of ownership and existence of files using <Ethereum />
-    </TagLine>
-    <CTA primary>
-      <Link to="/upload">Upload a file</Link>
-      &nbsp;to get started!
-    </CTA>
-    <Or>or</Or>
-    <CTA>
-      <Link to="/upload">Sign in</Link>
-      &nbsp;to view your files
-    </CTA>
-  </Container>
+  <Layout>
+    <Container>
+      <Title>
+        Proof of <Em>Existence</Em>
+      </Title>
+      <TagLine>
+        Check of ownership and existence of files using <Ethereum />
+      </TagLine>
+      <CTA primary>
+        <Link to="/upload">Upload a file</Link>
+        &nbsp;to get started!
+      </CTA>
+      <Or>or</Or>
+      <CTA>
+        <Link to="/list">List</Link>
+        &nbsp;your files
+      </CTA>
+    </Container>
+  </Layout>
 );
 
 export default Landing;
