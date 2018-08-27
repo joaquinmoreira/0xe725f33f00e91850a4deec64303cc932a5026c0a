@@ -10,18 +10,20 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   font-family: ${({ theme }) => theme.fonts.default};
+  height: 100%;
 
   & > *,
   & > *::before,
   & > *::after {
     -webkit-font-smoothing: antialiased;
-    box-sizing: inherit;
+    box-sizing: border-box;
     font-family: ${({ theme }) => theme.fonts.default};
   }
 `;
 
 const Content = styled.div`
   height: 100%;
+  overflow: hidden;
   padding: 40px;
 `;
 

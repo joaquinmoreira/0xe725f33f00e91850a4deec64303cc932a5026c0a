@@ -8,13 +8,13 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-evenly;
+  height: 100%;
 `;
 
 const Title = styled.h1`
   font-weight: bold;
   font-size: 48px;
-  margin-bottom: 20px;
-  margin-top: 40px;
   line-height: 50px;
   text-align: center;
 `;
@@ -22,8 +22,6 @@ const Title = styled.h1`
 const TagLine = styled.h2`
   font-weight: normal;
   font-size: 24px;
-  margin-top: 0;
-  margin-bottom: 120px;
   text-align: center;
 
   & > svg {
@@ -32,9 +30,14 @@ const TagLine = styled.h2`
   }
 `;
 
+const CTAContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: inherit;
+`;
+
 const CTA = styled.p`
   font-size: ${({ primary }) => (primary ? "20px" : "16px")};
-  margin: 10px 0;
 
   & > a {
     color: ${({ theme }) => theme.colors.fg.accent};
@@ -71,15 +74,17 @@ const Landing = () => (
       <TagLine>
         Check of ownership and existence of files using <Ethereum />
       </TagLine>
-      <CTA primary>
-        <Link to="/upload">Upload a file</Link>
-        &nbsp;to get started!
-      </CTA>
-      <Or>or</Or>
-      <CTA>
-        <Link to="/list">List</Link>
-        &nbsp;your files
-      </CTA>
+      <CTAContainer>
+        <CTA primary>
+          <Link to="/upload">Upload a file</Link>
+          &nbsp;to get started!
+        </CTA>
+        <Or>or</Or>
+        <CTA>
+          <Link to="/list">List</Link>
+          &nbsp;your files
+        </CTA>
+      </CTAContainer>
     </Container>
   </Layout>
 );

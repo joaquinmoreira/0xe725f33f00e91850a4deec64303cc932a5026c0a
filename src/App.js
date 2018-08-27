@@ -6,6 +6,7 @@ import { getWeb3 } from "./services/web3";
 import ErrorPage, { ERROR_TYPES } from "./components/pages/ErrorPage";
 import Landing from "./components/pages/Landing";
 import List from "./components/pages/List";
+import File from "./components/pages/File";
 import Upload from "./components/pages/Upload";
 import theme from "./theme";
 
@@ -32,6 +33,7 @@ class App extends Component {
                 <Route exact path="/" component={Landing} />
                 <Route path="/upload" component={Upload} />
                 <Route path="/list" component={List} />
+                <Route path="/file/:hash/:address" component={File} />
                 <Route
                   render={() => <ErrorPage type={ERROR_TYPES.NOT_FOUND} />}
                 />

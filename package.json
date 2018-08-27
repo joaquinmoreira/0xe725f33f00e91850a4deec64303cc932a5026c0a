@@ -16,7 +16,9 @@
     ]
   },
   "dependencies": {
+    "bs58": "^4.0.1",
     "ipfs-api": "^24.0.0",
+    "moment": "^2.22.2",
     "prop-types": "^15.6.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
@@ -25,7 +27,9 @@
     "styled-components": "^3.4.2",
     "styled-icons": "^2.3.2",
     "styled-loaders": "^0.2.1",
+    "truffle": "^4.1.14",
     "truffle-contract": "^3.0.6",
+    "uuid": "^3.3.2",
     "web3": "^0.20.7"
   },
   "devDependencies": {

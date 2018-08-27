@@ -10,7 +10,8 @@ const Logo = styled.span`
 
     &:hover,
     &:active,
-    &:visited {
+    &:visited,
+    &:focus {
       color: ${({ theme }) => theme.colors.fg.accent};
     }
   }

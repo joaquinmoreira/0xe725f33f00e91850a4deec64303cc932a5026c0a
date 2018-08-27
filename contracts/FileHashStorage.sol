@@ -3,75 +3,57 @@ pragma solidity 0.4.24;
 
 contract FileHashStorage {
     struct File {
-        string hash;
-        string[] tags;
+        bytes32 digest;
+        uint8 hashFunction;
+        uint8 size;
+        uint timestamp;
     }
     
     struct User {
         File[] documents;
     }
     
-    mapping (address => File[]) filesByUser;
-    mapping (string => address) userByFileHash;
-    address owner;
+    mapping (address => File[]) public filesByUser;
+    mapping (bytes32 => address) userByFileHash;
     
-    constructor() public {
-        owner = msg.sender;
-    }
-    
-    function addFile(string hash)
+    function addFile(bytes32 digest, uint8 hashFunction, uint8 size)
         public
-        returns (uint index)
+        returns (bool success)
     {
-        filesByUser[msg.sender].push(File(hash, new string[](0)));
-        return index;
-    }
-    
-    function addTagToFile(uint index, string tag)
-        public
-        returns (bool status)
-    {
-        filesByUser[msg.sender][index].tags.push(tag);
+        filesByUser[msg.sender].push(File(digest, hashFunction, size, block.timestamp));
+        bytes32 hash = getIPFSHash(digest, hashFunction, size);
+        
+        require(
+            userByFileHash[hash] == 0x0,
+            "This file was already uploaded"
+        );
+        
+        userByFileHash[hash] = msg.sender;
         return true;
     }
     
-    function getAddressFromFile(string hash)
+    function getOwnerOfFile(bytes32 digest, uint8 hashFunction, uint8 size) 
         public
         view
-        returns (address user)
+        returns (address ownerAddress) 
     {
+        bytes32 hash = getIPFSHash(digest, hashFunction, size);
         return userByFileHash[hash];
     }
     
-    function getFilesLength()
+    function getIPFSHash(bytes32 digest, uint8 hashFunction, uint8 size)
+        internal
+        pure
+        returns (bytes32 hash)
+    {
+        return keccak256(abi.encodePacked(digest, hashFunction, size));
+    }
+    
+    function filesQuantity()
         public
         view
-        returns (uint length)
+        returns (uint index)
     {
         return filesByUser[msg.sender].length;
-    }
-    
-    function getFileHash(uint index)
-        public
-        view
-        returns (string hash)
-    {
-        return filesByUser[msg.sender][index].hash;
-    }
-    
-    function getFileTagsLength(uint index)
-        public
-        view
-        returns (uint length)
-    {
-        return filesByUser[msg.sender][index].tags.length;
-    }
-    
-    function getFileTag(uint fileIndex, uint tagIndex)
-        public
-        view
-        returns (string tag)
-    {
-        return filesByUser[msg.sender][fileIndex].tags[tagIndex];
     }
 }
