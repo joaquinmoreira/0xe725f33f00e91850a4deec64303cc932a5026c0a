@@ -1,0 +1,16 @@
+{
+  "package_name": "FileHashStorage",
+  "version": "1.0.0",
+  "description": "Check of ownership and existence of files using Ethereum",
+  "authors": [
+    "Joaquin Moreira <joaquin.moreira@consensys.net>"
+  ],
+  "keywords": [
+    "ethereum",
+    "POE"
+  ],
+  "dependencies": {
+    "zeppelin": "^1.3.0"
+  },
+  "license": "MIT"
+}
