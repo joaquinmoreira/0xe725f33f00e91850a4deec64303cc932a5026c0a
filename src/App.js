@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import { getWeb3 } from "./services/web3";
 
 import ErrorPage, { ERROR_TYPES } from "./components/pages/ErrorPage";
 import Landing from "./components/pages/Landing";
@@ -12,11 +11,6 @@ import theme from "./theme";
 
 class App extends Component {
   state = {};
-
-  async componentDidMount() {
-    getWeb3();
-  }
-
   componentDidCatch(error) {
     this.setState({ error });
   }

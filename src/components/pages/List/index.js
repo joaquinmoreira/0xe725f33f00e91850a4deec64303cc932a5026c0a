@@ -1,8 +1,7 @@
 import React, { Component, Fragment } from "react";
-import PropTypes from "prop-types";
 import contract from "truffle-contract";
 import moment from "moment";
-import { withAddress, isWeb3Present } from "../../../services/web3";
+import { isWeb3Present, getWeb3 } from "../../../services/web3";
 import { getFile, getHashFromComponents } from "../../../services/ipfs";
 import FileHashStorage from "../../../../build/contracts/FileHashStorage";
 import Layout from "../../Layout";
@@ -17,6 +16,8 @@ class List extends Component {
   state = { loading: true };
 
   async componentDidMount() {
+    await getWeb3();
+    this.setupAddress();
     await this.initializeContract();
     await this.getFiles();
     this.setState({ loading: false });
@@ -25,7 +26,7 @@ class List extends Component {
   async getFiles() {
     /* eslint-disable no-await-in-loop */
 
-    const { address } = this.props;
+    const { address } = this.state;
     const quantity = await this.contract.filesQuantity();
     const files = [];
 
@@ -45,8 +46,21 @@ class List extends Component {
     /* eslint-enable no-await-in-loop */
   }
 
+  setupAddress() {
+    const updater = () => {
+      const [address] = web3.eth.accounts;
+      const { address: oldAddress } = this.state;
+      if (address !== oldAddress) {
+        web3.eth.defaultAccount = address;
+        this.setState({ address });
+      }
+    };
+    updater();
+    this.addressInterval = setInterval(updater, 500);
+  }
+
   async initializeContract() {
-    const { address } = this.props;
+    const { address } = this.state;
     const Contract = contract(FileHashStorage);
     Contract.setProvider(web3.currentProvider);
     Contract.defaults({ from: address });
@@ -54,55 +68,52 @@ class List extends Component {
   }
 
   validForRender() {
-    const { address } = this.props;
+    const { address } = this.state;
     return isWeb3Present() && address;
   }
 
   render() {
-    const { loading, files } = this.state;
-    const { address } = this.props;
+    const { address, loading, files } = this.state;
+
+    if (loading) return <Loading size="60px" />;
 
     return (
       <Fragment>
         {this.validForRender() ? (
           <Layout>
             <Container>
-              {loading ? (
-                <Loading size="60px" />
-              ) : (
-                <Fragment>
-                  <Title>
-                    Files associated to the address:&nbsp;
-                    <Address>{shortAddress(address)}</Address>
-                  </Title>
-                  <FilesContainer>
-                    {files.map(({ hash, timestamp }) => {
-                      const date = moment
-                        .unix(timestamp.toNumber())
-                        .format(DATE_FORMAT);
-                      return (
-                        <File key={hash}>
-                          <a
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            href={getFile(hash)}
-                          >
-                            {shortAddress(hash)}
-                          </a>
-                          <a
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            href={`/file/${hash}/${address}`}
-                          >
-                            Proof link
-                          </a>
-                          <span>{date}</span>
-                        </File>
-                      );
-                    })}
-                  </FilesContainer>
-                </Fragment>
-              )}
+              <Fragment>
+                <Title>
+                  Files associated to the address:&nbsp;
+                  <Address>{shortAddress(address)}</Address>
+                </Title>
+                <FilesContainer>
+                  {files.map(({ hash, timestamp }) => {
+                    const date = moment
+                      .unix(timestamp.toNumber())
+                      .format(DATE_FORMAT);
+                    return (
+                      <File key={hash}>
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={getFile(hash)}
+                        >
+                          {shortAddress(hash)}
+                        </a>
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={`/file/${hash}/${address}`}
+                        >
+                          Proof link
+                        </a>
+                        <span>{date}</span>
+                      </File>
+                    );
+                  })}
+                </FilesContainer>
+              </Fragment>
             </Container>
           </Layout>
         ) : (
@@ -119,12 +130,4 @@ class List extends Component {
   }
 }
 
-List.propTypes = {
-  address: PropTypes.string
-};
-
-List.defaultProps = {
-  address: null
-};
-
-export default withAddress(List);
+export default List;

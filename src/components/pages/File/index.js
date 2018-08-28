@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import contract from "truffle-contract";
-import { isWeb3Present } from "../../../services/web3";
+import { isWeb3Present, getWeb3 } from "../../../services/web3";
 import { getFile, getComponentsFromHash } from "../../../services/ipfs";
 import FileHashStorage from "../../../../build/contracts/FileHashStorage";
 import Layout from "../../Layout";
@@ -13,6 +13,7 @@ class File extends Component {
   state = { loading: true };
 
   async componentDidMount() {
+    await getWeb3();
     await this.initializeContract();
     this.verifyFile();
     this.setState({ loading: false });

@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from "react";
-import PropTypes from "prop-types";
 import contract from "truffle-contract";
 import { Ethereum } from "styled-icons/fa-brands";
 import {
@@ -12,7 +11,7 @@ import {
   Message,
   Submit
 } from "./components";
-import { withAddress, isWeb3Present } from "../../../services/web3";
+import { isWeb3Present, getWeb3 } from "../../../services/web3";
 import ipfs, { getComponentsFromHash } from "../../../services/ipfs";
 import FileHashStorage from "../../../../build/contracts/FileHashStorage";
 import { shortAddress } from "../../../utils";
@@ -22,7 +21,17 @@ import Loading from "../../Loading";
 import { UPLOADED, ALREADY_UPLOADED, DEFAULT_ADDRESS } from "./constants";
 
 class Upload extends Component {
-  state = {};
+  state = { loading: true };
+
+  async componentDidMount() {
+    await getWeb3();
+    this.setupAddress();
+    this.setState({ loading: false });
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.addressInterval);
+  }
 
   onFileChange = async files => {
     if (files.length === 0) return;
@@ -32,8 +41,7 @@ class Upload extends Component {
   };
 
   onSubmit = async e => {
-    const { file } = this.state;
-    const { address } = this.props;
+    const { file, address } = this.state;
     e.preventDefault();
 
     this.setState({ uploading: true });
@@ -68,6 +76,24 @@ class Upload extends Component {
     });
   };
 
+  setupAddress() {
+    const updater = () => {
+      const [address] = web3.eth.accounts;
+      const { address: oldAddress } = this.state;
+      if (address !== oldAddress) {
+        web3.eth.defaultAccount = address;
+        this.setState({ address });
+      }
+    };
+    updater();
+    this.addressInterval = setInterval(updater, 500);
+  }
+
+  saveToContract = async (digest, hashFunction, size) => {
+    const { address } = this.state;
+    await this.contract.addFile(digest, hashFunction, size, { from: address });
+  };
+
   addToIpfs = async file => {
     return new Promise((resolve, reject) => {
       const reader = new window.FileReader();
@@ -83,13 +109,8 @@ class Upload extends Component {
     });
   };
 
-  saveToContract = async (digest, hashFunction, size) => {
-    const { address } = this.props;
-    await this.contract.addFile(digest, hashFunction, size, { from: address });
-  };
-
   async initializeContract() {
-    const { address } = this.props;
+    const { address } = this.state;
     const Contract = contract(FileHashStorage);
     Contract.setProvider(web3.currentProvider);
     Contract.defaults({ from: address });
@@ -97,7 +118,7 @@ class Upload extends Component {
   }
 
   validForRender() {
-    const { address } = this.props;
+    const { address } = this.state;
     return isWeb3Present() && address;
   }
 
@@ -132,8 +153,9 @@ class Upload extends Component {
   }
 
   render() {
-    const { uploading, file, upload } = this.state;
-    const { address } = this.props;
+    const { uploading, file, upload, loading, address } = this.state;
+
+    if (loading) return <Loading size="60px" />;
 
     return (
       <Fragment>
@@ -183,12 +205,4 @@ class Upload extends Component {
   }
 }
 
-Upload.propTypes = {
-  address: PropTypes.string
-};
-
-Upload.defaultProps = {
-  address: null
-};
-
-export default withAddress(Upload);
+export default Upload;
