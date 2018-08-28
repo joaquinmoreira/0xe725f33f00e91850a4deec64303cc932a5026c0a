@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "start": "parcel index.html",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "test": "truffle test"
   },
   "lint-staged": {
     "*.js": [
@@ -29,6 +30,7 @@
     "styled-loaders": "^0.2.1",
     "truffle": "^4.1.14",
     "truffle-contract": "^3.0.6",
+    "truffle-hdwallet-provider": "^0.0.6",
     "uuid": "^3.3.2",
     "web3": "^0.20.7"
   },

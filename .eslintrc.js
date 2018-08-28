@@ -10,7 +10,10 @@ module.exports = {
     document: true,
     window: true,
     web3: true,
-    artifacts: true
+    artifacts: true,
+    contract: true,
+    assert: true,
+    before: true
   },
   "parser": "babel-eslint"
 };
